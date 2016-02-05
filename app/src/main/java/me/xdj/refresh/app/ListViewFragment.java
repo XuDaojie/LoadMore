@@ -92,5 +92,6 @@ public class ListViewFragment extends Fragment {
             Log.d("ListViewFragment", "setEmpty" + mPage);
         }
         mRefreshLayout.setLoading(false);
+        Log.d("xxxxxx", "loadData: " + mRefreshLayout.getChildCount());
     }
 }

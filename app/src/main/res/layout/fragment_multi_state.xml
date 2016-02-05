@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<me.xdj.refresh.MultiStateView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/multi_state_view"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:emptyView="@layout/view_empty"
+    app:failView="@layout/view_fail"
+    app:loadingView="@layout/view_loading"
+    app:initView="loading"
+    app:preview="content">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="MultiStateView"/>
+</me.xdj.refresh.MultiStateView>

@@ -1,15 +1,14 @@
 package me.xdj.refresh;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 /**
  * Created by xdj on 16/1/23.
@@ -22,7 +21,7 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
     private OnLoadListener mLoadListener;
     private boolean mLoading;
 
-    private RefreshState mState = RefreshState.NONE;
+    private LoadingState mState = LoadingState.NORMAL;
     private View mLoadingView;
     private View mEmptyView;
     private View mFooterView;
@@ -31,6 +30,20 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
         super(context, attrs);
         this.mContext = context;
         this.mInflater = LayoutInflater.from(mContext);
+
+        // Test
+        View view = getRootView();
+        View v = getChildAt(0);
+        int childCount = getChildCount();
+
+        // Custom attribute
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ListViewRefreshLayout);
+        int background = a.getColor(R.styleable.ListViewRefreshLayout_attrTest, 0XFFFFFFFF);
+        this.setBackgroundColor(background);
+        // Preview
+        if (isInEditMode()) {
+            setBackgroundResource(android.R.color.holo_red_light);
+        }
     }
 
     public ListViewRefreshLayout(Context context) {
@@ -48,7 +61,7 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
-                if (canLoad() && !mLoading && mState != RefreshState.EMPTY) {
+                if (canLoad() && !mLoading && mState != LoadingState.EMPTY) {
                     mLoadListener.onLoad();
                 }
                 break;
@@ -61,7 +74,7 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
         this.mList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (canLoad() && !mLoading && mState != RefreshState.EMPTY) {
+                if (canLoad() && !mLoading && mState != LoadingState.EMPTY) {
                     mLoadListener.onLoad();
                 }
             }
@@ -95,9 +108,10 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
 
     private boolean canLoad() {
         if (mList == null) {
-            throw new NullPointerException("mList is null, please call setChildView(ListView listView)");
+            //View view = getChildAt(1);
+            //throw new NullPointerException("mList is null, please call setChildView(ListView listView)");
         }
-        if (mState == RefreshState.EMPTY) {
+        if (mState == LoadingState.EMPTY) {
             return false;
         }
         // 最后一个View显示后则进行加载
@@ -117,12 +131,13 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
         if (mLoadingView == null) {
             mLoadingView = mInflater.inflate(R.layout.view_loading_refresh, null, false);
         }
-        if (mState != RefreshState.LOADING) {
+        if (mState != LoadingState.LOADING) {
+
             if (mList.getFooterViewsCount() > 0) {
                 mList.removeFooterView(mFooterView);
             }
             mList.addFooterView(mLoadingView, null, false);
-            mState = RefreshState.LOADING;
+            mState = LoadingState.LOADING;
             mFooterView = mLoadingView;
             mLoading = true;
         }
@@ -132,12 +147,12 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
         if (mEmptyView == null) {
             mEmptyView = mInflater.inflate(R.layout.view_empty_refresh, null, false);
         }
-        if (mState != RefreshState.EMPTY) {
+        if (mState != LoadingState.EMPTY) {
             if (mList.getFooterViewsCount() > 0) {
                 mList.removeFooterView(mFooterView);
             }
             mList.addFooterView(mEmptyView, null, false);
-            mState = RefreshState.EMPTY;
+            mState = LoadingState.EMPTY;
             mFooterView = mEmptyView;
         }
     }
