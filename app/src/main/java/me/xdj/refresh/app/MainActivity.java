@@ -125,8 +125,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
-            //return new ListViewFragment();
-            return new MultiStateFragment();
+            return new ListViewFragment();
         }
 
         @Override
