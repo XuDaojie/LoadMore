@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,18 +32,12 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
         this.mContext = context;
         this.mInflater = LayoutInflater.from(mContext);
 
-        // Test
-        View view = getRootView();
-        View v = getChildAt(0);
-        int childCount = getChildCount();
-
         // Custom attribute
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ListViewRefreshLayout);
-        int background = a.getColor(R.styleable.ListViewRefreshLayout_attrTest, 0XFFFFFFFF);
-        this.setBackgroundColor(background);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ListViewRefreshLayout);
+
         // Preview
         if (isInEditMode()) {
-            setBackgroundResource(android.R.color.holo_red_light);
+            //setBackgroundResource(android.R.color.holo_red_light);
         }
     }
 
@@ -62,6 +57,8 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
                 break;
             case MotionEvent.ACTION_UP:
                 if (canLoad() && !mLoading && mState != LoadingState.EMPTY) {
+                    Log.d("onLoad", "dispatchTouchEvent");
+                    mLoading = true;
                     mLoadListener.onLoad();
                 }
                 break;
@@ -74,7 +71,10 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
         this.mList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
-                if (canLoad() && !mLoading && mState != LoadingState.EMPTY) {
+                if (scrollState == SCROLL_STATE_IDLE &&
+                        canLoad() && !mLoading && mState != LoadingState.EMPTY) {
+                    Log.d("onLoad", "onScrollStateChanged");
+                    mLoading = true;
                     mLoadListener.onLoad();
                 }
             }

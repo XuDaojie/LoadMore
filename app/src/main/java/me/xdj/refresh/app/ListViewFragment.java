@@ -40,6 +40,7 @@ public class ListViewFragment extends Fragment {
         mList.setAdapter(mAdapter);
         mRefreshLayout.setChildView(mList);
         loadData(mPage);
+        mRefreshLayout.setLoading(false);
         initEvent();
         return view;
     }
@@ -57,7 +58,7 @@ public class ListViewFragment extends Fragment {
                         mRefreshLayout.setRefreshing(false);
                         mRefreshLayout.setLoading(false);
                     }
-                }, 1000);
+                }, 3000);
             }
         });
         mRefreshLayout.setOnLoadListener(new ListViewRefreshLayout.OnLoadListener() {
@@ -66,15 +67,14 @@ public class ListViewFragment extends Fragment {
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("ListViewFragment", "loading");
                         loadData(mPage);
                     }
-                }, 1000);
+                }, 3000);
             }
         });
     }
 
-    private void loadData(int page) {
+    private void loadData(final int page) {
         if (mPage == 3) {
             return;
         }
@@ -83,15 +83,12 @@ public class ListViewFragment extends Fragment {
         }
         while (mData.size() < (page + 1) * 15) {
             mData.add(mData.size() + "");
-            Log.d("ListViewFragment", "mData.size():" + mData.size());
         }
         mAdapter.notifyDataSetChanged();
         ++mPage;
         if (mPage == 3) {
             mRefreshLayout.setEmpty();
-            Log.d("ListViewFragment", "setEmpty" + mPage);
         }
         mRefreshLayout.setLoading(false);
-        Log.d("xxxxxx", "loadData: " + mRefreshLayout.getChildCount());
     }
 }
