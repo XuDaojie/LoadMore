@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 /**
  * Created by xdj on 16/1/23.
+ * ListView 上拉加载
  */
 public class ListViewRefreshLayout extends SwipeRefreshLayout {
     private Context mContext;
@@ -49,6 +50,7 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        // TODO 解决ListView和SwipeRefreshLayout的冲突
         int action = ev.getAction();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
@@ -123,10 +125,6 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
         return false;
     }
 
-    public interface OnLoadListener {
-        void onLoad();
-    }
-
     public void setLoading() {
         if (mLoadingView == null) {
             mLoadingView = mInflater.inflate(R.layout.view_loading_refresh, null, false);
@@ -158,5 +156,12 @@ public class ListViewRefreshLayout extends SwipeRefreshLayout {
     }
 
     public void setFail() {
+    }
+
+    /**
+     * 实现上拉加载
+     */
+    public interface OnLoadListener {
+        void onLoad();
     }
 }
