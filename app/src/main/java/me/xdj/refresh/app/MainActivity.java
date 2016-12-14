@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     class PagerAdapter extends FragmentPagerAdapter {
-        String[] titles = new String[] {"ListView", "RecyclerView"};
+        String[] titles = new String[] {"ListView", "RecyclerView", "LoadMore"};
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -126,8 +126,10 @@ public class MainActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             if (position == 0) {
                 return new ListViewFragment();
+            } else if (position == 1) {
+                return new RecyclerViewFragment();
             }
-            return new RecyclerViewFragment();
+            return TestLoadMoreFragment.newInstance();
         }
 
         @Override
