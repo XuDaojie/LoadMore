@@ -30,12 +30,12 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
     private LoadMoreListener mLoadMoreListener;
 
     public LoadMoreAdapter(List<T> data, int limit) {
-        mData = data;
-        mLimit = limit;
-        if (mLimit <= 0) {
+        if (limit <= 0) {
             throw new RuntimeException("limit must > 0");
         }
 
+        mLimit = limit;
+        mData = data;
         mEnableLoadMore = true;
     }
 
@@ -60,6 +60,7 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
                 && isLastVH(position)) {
             int lastPage = (getItemCount() - 1) / mLimit;
             int nextPage = lastPage + 1;
+            mLoading = true;
             mLoadMoreListener.onLoadMore(nextPage);
         }
     }

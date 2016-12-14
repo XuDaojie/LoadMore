@@ -53,16 +53,23 @@ public class TestLoadMoreFragment extends Fragment {
             @Override
             public void onLoadMore(final int page) {
                 if (mToast == null) {
-                    mToast = Toast.makeText(mActivity, "加载 page: " + page, Toast.LENGTH_SHORT);
+                    mToast = Toast.makeText(mActivity, "正在加载 page: " + page, Toast.LENGTH_SHORT);
                 } else {
-                    mToast.setText("加载 page: " + page);
+                    mToast.setText("正在加载 page: " + page);
                 }
                 mToast.show();
-                List<String> data = createItems(page, LIMIT);
-                if (data == null || data.size() < LIMIT) {
-                    adapter.setEnableLoadMore(false);
-                }
-                adapter.addItem(data);
+
+                mRootView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.setLoading(false);
+                        List<String> data = createItems(page, LIMIT);
+                        if (data == null || data.size() < LIMIT) {
+                            adapter.setEnableLoadMore(false);
+                        }
+                        adapter.addItem(data);
+                    }
+                }, 1500);
             }
         });
         recyclerView.setAdapter(adapter);
