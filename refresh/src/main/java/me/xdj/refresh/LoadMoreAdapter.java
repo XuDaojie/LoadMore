@@ -2,6 +2,7 @@ package me.xdj.refresh;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
@@ -11,11 +12,16 @@ import java.util.List;
  * Created by xdj on 2016/12/14.
  */
 
-public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter {
+
+    private static final int VIEW_TYPE_LOAD_MORE = -30301;
 
     private LayoutInflater mInflater;
     private ViewGroup mVHParent;
-
+    /**
+     * 加载更多（loading、noMore、fail）
+     */
+    private View mLoadMoreView;
     private List<T> mData;
     private int mLimit;
     /**
@@ -40,7 +46,11 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
     }
 
     @Override
-    public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == VIEW_TYPE_LOAD_MORE) {
+            return new DefaultViewHolder(mLoadMoreView);
+        }
+
         if (mInflater == null) {
             mInflater = LayoutInflater.from(parent.getContext());
         }
@@ -51,14 +61,21 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
     }
 
     @Override
-    public void onBindViewHolder(VH holder, int position) {
-        onBindVH(holder, position);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (getItemViewType(position) != VIEW_TYPE_LOAD_MORE) {
+            onBindVH((VH) holder, position);
+        }
 
         if (mLoadMoreListener != null
                 && mEnableLoadMore
                 && !mLoading
                 && isLastVH(position)) {
-            int lastPage = (getItemCount() - 1) / mLimit;
+
+            int itemCount = getItemCount();
+            int lastPage = (itemCount - 1) / mLimit;
+            if (mLoadMoreView != null) {
+                lastPage = (itemCount - 2) / mLimit;
+            }
             int nextPage = lastPage + 1;
             mLoading = true;
             mLoadMoreListener.onLoadMore(nextPage);
@@ -67,7 +84,20 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
 
     @Override
     public int getItemCount() {
-        return mData == null ? 0 : mData.size();
+        int dataCount = mData == null ? 0 : mData.size();
+        if (mLoadMoreView == null) {
+            return dataCount;
+        }
+        return dataCount + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (mLoadMoreView != null
+                && position == getItemCount() - 1) {
+            return VIEW_TYPE_LOAD_MORE;
+        }
+        return super.getItemViewType(position);
     }
 
     public T getItem(int position) {
@@ -75,6 +105,10 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
             return null;
         }
         return mData.get(position);
+    }
+
+    public void setLoadMoreView(View view) {
+        mLoadMoreView = view;
     }
 
     public boolean isLoading() {
@@ -113,6 +147,11 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
 
     public void clearItem() {
         mData.clear();
+        notifyDataSetChanged();
+    }
+
+    public View getLoadMoreView() {
+        return mLoadMoreView;
     }
 
     /**
@@ -128,11 +167,32 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
 
     public abstract void onBindVH(VH holder, int position);
 
+    /**
+     * 无更多数据
+     */
+    public abstract void dataNoMore();
+
+    /**
+     * 设置foot显示loading
+     */
+    public abstract void dataLoading();
+
+    /**
+     * 数据加载失败
+     */
+    public abstract void dataLoadFail();
+
     public interface LoadMoreListener {
         /**
          * 加载更多
          * @param page 从0开始计数
          */
         void onLoadMore(int page);
+    }
+
+    private static class DefaultViewHolder extends RecyclerView.ViewHolder {
+        DefaultViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 }

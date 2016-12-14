@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,9 +47,13 @@ public class TestLoadMoreFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_test_recycler, container, false);
         final RecyclerView recyclerView = (RecyclerView) mRootView.findViewById(R.id.recycler);
+        final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) mRootView.findViewById(R.id.refresh);
         recyclerView.setLayoutManager(new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false));
         List<String> data = createItems(0, LIMIT);
-        final ListAdapter adapter = new ListAdapter(data, LIMIT);
+        View loadMoreView = inflater.inflate(R.layout.view_load_more, container, false);
+        final ListAdapter adapter = new ListAdapter(data, LIMIT, loadMoreView);
+        // create loadMoreView
+//        adapter.setLoadMoreView(loadMoreView);
         adapter.setLoadMoreListener(new LoadMoreAdapter.LoadMoreListener() {
             @Override
             public void onLoadMore(final int page) {
@@ -65,7 +70,7 @@ public class TestLoadMoreFragment extends Fragment {
                         adapter.setLoading(false);
                         List<String> data = createItems(page, LIMIT);
                         if (data == null || data.size() < LIMIT) {
-                            adapter.setEnableLoadMore(false);
+                            adapter.dataNoMore();
                         }
                         adapter.addItem(data);
                     }
@@ -73,6 +78,28 @@ public class TestLoadMoreFragment extends Fragment {
             }
         });
         recyclerView.setAdapter(adapter);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+//                adapter.dataLoading(); 直接修改状态的话会导致刷新和加载更多都被触发
+                mRootView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.clearItem();
+                        refreshLayout.setRefreshing(false);
+                        List<String> data = createItems(0, LIMIT);
+                        if (data == null || data.size() < LIMIT) {
+                            adapter.dataNoMore();
+                        } else {
+                            adapter.dataLoading();
+                        }
+                        adapter.addItem(data);
+                    }
+                }, 1500);
+            }
+        });
+
         return mRootView;
     }
 
@@ -93,7 +120,20 @@ public class TestLoadMoreFragment extends Fragment {
         return data;
     }
 
-    class ListAdapter extends LoadMoreAdapter<String, ItemViewHolder> {
+    private class ListAdapter extends LoadMoreAdapter<String, ItemViewHolder> {
+
+        private View mLoading;
+        private View mNoMore;
+        private View mFail;
+
+        public ListAdapter(List<String> data, int limit, View loadMoreView) {
+            this(data, limit);
+            setLoadMoreView(loadMoreView);
+
+            mLoading = loadMoreView.findViewById(R.id.loading);
+            mNoMore = loadMoreView.findViewById(R.id.no_more);
+            mFail = loadMoreView.findViewById(R.id.fail);
+        }
 
         public ListAdapter(List<String> data, int limit) {
             super(data, limit);
@@ -109,6 +149,33 @@ public class TestLoadMoreFragment extends Fragment {
         public void onBindVH(ItemViewHolder holder, int position) {
             String text = getItem(position);
             holder.text1.setText(text);
+        }
+
+        @Override
+        public void dataNoMore() {
+            mLoading.setVisibility(View.GONE);
+            mNoMore.setVisibility(View.VISIBLE);
+            mFail.setVisibility(View.GONE);
+
+            setEnableLoadMore(false);
+        }
+
+        @Override
+        public void dataLoading() {
+            mLoading.setVisibility(View.VISIBLE);
+            mNoMore.setVisibility(View.GONE);
+            mFail.setVisibility(View.GONE);
+
+            setEnableLoadMore(true);
+        }
+
+        @Override
+        public void dataLoadFail() {
+            mLoading.setVisibility(View.GONE);
+            mNoMore.setVisibility(View.GONE);
+            mFail.setVisibility(View.VISIBLE);
+
+            setEnableLoadMore(false);
         }
 
     }
