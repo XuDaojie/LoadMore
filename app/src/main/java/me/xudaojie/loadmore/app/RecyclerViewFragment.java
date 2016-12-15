@@ -1,4 +1,4 @@
-package me.xdj.refresh.app;
+package me.xudaojie.loadmore.app;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -14,7 +14,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import me.xdj.refresh.RecyclerViewRefreshLayout;
+import me.xdj.refresh.app.R;
+import me.xudaojie.loadmore.RecyclerViewRefreshLayout;
 
 /**
  * Created by xdj on 16/3/2.

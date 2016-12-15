@@ -1,15 +1,12 @@
-package me.xdj.refresh;
+package me.xudaojie.loadmore;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.preference.PreferenceActivity;
-import android.sax.RootElement;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.BaseAdapter;
 
 /**
  * Created by xdj on 16/3/3.

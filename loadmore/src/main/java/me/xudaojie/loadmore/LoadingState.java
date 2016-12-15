@@ -1,4 +1,4 @@
-package me.xdj.refresh;
+package me.xudaojie.loadmore;
 
 /**
  * Created by xdj on 16/1/24.

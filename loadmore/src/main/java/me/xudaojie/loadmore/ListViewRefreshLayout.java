@@ -1,4 +1,4 @@
-package me.xdj.refresh;
+package me.xudaojie.loadmore;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,6 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
+
+import me.xdj.refresh.R;
 
 /**
  * Created by xdj on 16/1/23.

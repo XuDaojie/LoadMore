@@ -1,4 +1,4 @@
-package me.xdj.refresh;
+package me.xudaojie.loadmore;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.henrytao.recyclerview.SimpleRecyclerViewAdapter;
+import me.xdj.refresh.R;
 
 /**
  * Created by xdj on 16/3/3.

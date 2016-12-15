@@ -1,4 +1,4 @@
-package me.xdj.refresh.app;
+package me.xudaojie.loadmore.app;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -17,7 +17,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xdj.refresh.LoadMoreAdapter;
+import me.xdj.refresh.app.R;
+import me.xudaojie.loadmore.LoadMoreAdapter;
 
 /**
  * Created by xdj on 2016/12/14.
