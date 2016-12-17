@@ -18,8 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import me.xdj.refresh.app.R;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private ViewPager mPager;
@@ -118,7 +116,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     class PagerAdapter extends FragmentPagerAdapter {
-        String[] titles = new String[] {"ListView", "RecyclerView", "LoadMore"};
+        String[] titles = new String[] {"ListView", "LoadMore"};
 
         public PagerAdapter(FragmentManager fm) {
             super(fm);
@@ -129,7 +127,7 @@ public class MainActivity extends AppCompatActivity
             if (position == 0) {
                 return new ListViewFragment();
             } else if (position == 1) {
-                return new RecyclerViewFragment();
+                return TestLoadMoreFragment.newInstance();
             }
             return TestLoadMoreFragment.newInstance();
         }

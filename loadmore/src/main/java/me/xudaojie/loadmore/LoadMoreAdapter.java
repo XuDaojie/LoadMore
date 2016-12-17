@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Created by xdj on 2016/12/14.
+ * 利用适配器实现的上拉加载
  */
 
 public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter {

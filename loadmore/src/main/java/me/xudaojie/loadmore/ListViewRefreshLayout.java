@@ -11,8 +11,6 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
-import me.xdj.refresh.R;
-
 /**
  * Created by xdj on 16/1/23.
  * ListView 上拉加载

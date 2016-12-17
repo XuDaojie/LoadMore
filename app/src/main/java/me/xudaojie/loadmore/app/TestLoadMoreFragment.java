@@ -17,7 +17,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xdj.refresh.app.R;
 import me.xudaojie.loadmore.LoadMoreAdapter;
 
 /**
