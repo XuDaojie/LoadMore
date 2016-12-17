@@ -1,7 +1,6 @@
 package me.xudaojie.loadmore;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,10 +51,8 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         if (viewType == VIEW_TYPE_LOAD_MORE) {
-            Log.i(TAG, "onCreateViewHolder LoadMore");
             return new DefaultViewHolder(mLoadMoreView);
         }
-        Log.i(TAG, "onCreateViewHolder ");
         if (mInflater == null) {
             mInflater = LayoutInflater.from(parent.getContext());
         }
@@ -67,7 +64,6 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.i(TAG, "onBindViewHolder " + position);
         if (getItemViewType(position) != VIEW_TYPE_LOAD_MORE) {
             onBindVH((VH) holder, position);
         }
@@ -148,12 +144,10 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
         mVHParent.post(new Runnable() {
             @Override
             public void run() {
-                Log.i(TAG, "xxx");
                 // notify 无法在布局或滚动时调用
 //                notifyItemRangeChanged(startPosition, data.size());
 //                notifyItemRangeInserted(startPosition, data.size());
                 notifyDataSetChanged();
-                Log.i(TAG, "dddd");
             }
         });
 
