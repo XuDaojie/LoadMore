@@ -1,6 +1,7 @@
 package me.xudaojie.loadmore;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 
 public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter {
+    private static final String TAG = LoadMoreAdapter.class.getSimpleName();
 
     private static final int VIEW_TYPE_LOAD_MORE = -30301;
 
@@ -48,10 +50,12 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         if (viewType == VIEW_TYPE_LOAD_MORE) {
+            Log.i(TAG, "onCreateViewHolder LoadMore");
             return new DefaultViewHolder(mLoadMoreView);
         }
-
+        Log.i(TAG, "onCreateViewHolder ");
         if (mInflater == null) {
             mInflater = LayoutInflater.from(parent.getContext());
         }
@@ -63,6 +67,7 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Log.i(TAG, "onBindViewHolder " + position);
         if (getItemViewType(position) != VIEW_TYPE_LOAD_MORE) {
             onBindVH((VH) holder, position);
         }
@@ -75,7 +80,11 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
             int itemCount = getItemCount();
             int lastPage = (itemCount - 1) / mLimit;
             if (mLoadMoreView != null) {
-                lastPage = (itemCount - 2) / mLimit;
+                if (itemCount == 1) {
+                    lastPage = -1;
+                } else {
+                    lastPage = (itemCount - 2) / mLimit;
+                }
             }
             int nextPage = lastPage + 1;
             mLoading = true;
@@ -132,15 +141,19 @@ public abstract class LoadMoreAdapter<T, VH extends RecyclerView.ViewHolder> ext
         mLoadMoreListener = loadMoreListener;
     }
 
-    public void addItem(List<T> data) {
+    public void addItem(final List<T> data) {
         final int startPosition = getItemCount() - 1;
         mData.addAll(data);
 
         mVHParent.post(new Runnable() {
             @Override
             public void run() {
+                Log.i(TAG, "xxx");
                 // notify 无法在布局或滚动时调用
-                notifyItemRangeChanged(startPosition, mLimit);
+//                notifyItemRangeChanged(startPosition, data.size());
+//                notifyItemRangeInserted(startPosition, data.size());
+                notifyDataSetChanged();
+                Log.i(TAG, "dddd");
             }
         });
 

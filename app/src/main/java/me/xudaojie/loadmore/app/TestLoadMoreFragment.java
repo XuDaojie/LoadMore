@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ public class TestLoadMoreFragment extends Fragment {
         adapter.setLoadMoreListener(new LoadMoreAdapter.LoadMoreListener() {
             @Override
             public void onLoadMore(final int page) {
+                Log.w(TAG, "正在加载 page: " + page);
                 if (mToast == null) {
                     mToast = Toast.makeText(mActivity, "正在加载 page: " + page, Toast.LENGTH_SHORT);
                 } else {
@@ -82,6 +84,7 @@ public class TestLoadMoreFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.w(TAG, "刷新");
 //                adapter.dataLoading(); 直接修改状态的话会导致刷新和加载更多都被触发
                 mRootView.postDelayed(new Runnable() {
                     @Override
